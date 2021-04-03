@@ -1,0 +1,34 @@
+specVersion: 0.0.2
+description: Ether Freakers Subgraph
+repository: https://github.com/davekaj/ether-freakers-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: EtherFreakers
+    network: mainnet
+    source:
+      address: "0x3A275655586A049FE860Be867D10cdae2Ffc0f33"
+      abi: EtherFreakers
+      startBlock: 12087257 
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/freakers.ts
+      entities:
+        - Freaker
+      abis:
+        - name: EtherFreakers
+          file: ./abis/freakers.json
+      eventHandlers:
+        - event: Born(address,uint128,indexed uint128,(uint8,uint8,uint8,uint8,uint8,uint8))
+          handler: handleBorn
+        - event: Missed(address,address,indexed uint128,indexed uint128)
+          handler: handleMissed
+        - event: Thwarted(address,address,indexed uint128,indexed uint128)
+          handler: handleThwarted
+        - event: Captured(address,address,indexed uint128,indexed uint128)
+          handler: handleCaptured
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer

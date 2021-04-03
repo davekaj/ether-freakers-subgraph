@@ -1,0 +1,96 @@
+type EtherFreakers @entity {
+  id: ID!
+  "An array of the Ether spent to birth a Freaker. In birth order. Ascending"
+  birthCertificates: [BigInt!]!
+  creatorIndex: BigInt!
+  freakerIndex: BigInt!
+  "Total fortune of all Freakers ever created"
+  totalFortune: BigInt!
+  middlePrice: BigInt!
+
+  missedAttackCounts: Int!
+  thwartedAttackCounts: Int!
+  capturedCounts: Int!
+
+  plutoCount: Int!
+  mercuryCount: Int!
+  saturnCount: Int!
+  uranusCount: Int!
+  venusCount: Int!
+  marsCount: Int!
+  neptuneCount: Int!
+  jupiterCount: Int!
+}
+
+type Species @entity {
+  "Species number"
+  id: ID!
+  "Species of the Freaker"
+  speciesName: SpeciesName!
+  "Odds of being born. Out of 100"
+  bornOdds: Int!
+  "Min 1. Max 10"
+  maxStamina: Int!
+  "Min 1. Max 30"
+  maxFortune: Int!
+  "Min 1. Max 30"
+  maxAgility: Int!
+  "Min 1. Max 30"
+  maxOffense: Int!
+  "Min 1. Max 30"
+  maxDefense: Int!
+  "Freakers of this species"
+  freakers: [Freaker!]! @derivedFrom(field: "species")
+}
+
+type Freaker @entity {
+  "ID of the Freaker"
+  id: ID!
+  "Species of the Freaker"
+  species: Species!
+  "Stamina of the Freaker"
+  stamina: Int!
+  "Fortune of the Freaker"
+  fortune: Int!
+  "Agility of the Freaker"
+  agility: Int!
+  "Offence of the Freaker"
+  offense: Int!
+  "Defense of the Freaker"
+  defense: Int!
+  "Total score. Max possible is 79 for non-immortals"
+  totalScore: Int!
+  "The original owner of the Freaker"
+  mother: Bytes! # WRONG - it must be ERC721 that does this
+  "AKA Value. Related to ETH used to birth"
+  energy: BigInt # TODO
+
+  tokenURI: String!
+  "The current owner of the Freaker"
+  owner: Bytes!
+  isImmortal: Boolean!
+  #   energyBalanceBasic: BigInt!
+  #   energyBalanceIndex: BigInt!
+
+  "Time born at"
+  bornAtTime: Int!
+  "Block born at"
+  bornAtBlock: Int!
+
+  missedAttackCounts: Int!
+  thwartedAttackCounts: Int!
+  capturedCounts: Int!
+}
+
+enum SpeciesName {
+  pluto
+  mercury
+  saturn
+  uranus
+  venus
+  mars
+  neptune
+  jupiter
+}
+
+# is enlighted? TODO

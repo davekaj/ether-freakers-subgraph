@@ -1,24 +1,37 @@
-type EtherFreakers @entity {
+type EtherFreakers @entity { # done
   id: ID!
   "An array of the Ether spent to birth a Freaker. In birth order. Ascending"
   birthCertificates: [BigInt!]!
+  "The creator index is updated on any births or attacks through _dissipateEnergyIntoPool. Energy (i.e. Ether) gets dissipated into the pool. Creator births, all energy goes to the creator index. All other births and attacks, 20% goes to the creator index"
   creatorIndex: BigInt!
+  "The freaker index is updated on any births or attacks through _dissipateEnergyIntoPool. Energy (i.e. Ether) gets dissipated into the pool. All births and attacks, 80% goes to the freaker index. It is divided by the total fortune"
   freakerIndex: BigInt!
   "Total fortune of all Freakers ever created"
   totalFortune: BigInt!
+  "Middle price of the array of prices paid to birth a freaker (i.e. middle price of birth certificates)"
   middlePrice: BigInt!
 
+  "Total missed attacks in the protocol ever"
   missedAttackCounts: Int!
+  "Total thwarted attacks in the protocol ever"
   thwartedAttackCounts: Int!
+  "Total captures in the protocol ever"
   capturedCounts: Int!
-
+  "Global Species Count"
   plutoCount: Int!
+  "Global Species Count"
   mercuryCount: Int!
+  "Global Species Count"
   saturnCount: Int!
+  "Global Species Count"
   uranusCount: Int!
+  "Global Species Count"
   venusCount: Int!
+  "Global Species Count"
   marsCount: Int!
+  "Global Species Count"
   neptuneCount: Int!
+  "Global Species Count"
   jupiterCount: Int!
 }
 
@@ -60,26 +73,66 @@ type Freaker @entity {
   defense: Int!
   "Total score. Max possible is 79 for non-immortals"
   totalScore: Int!
-  "The original owner of the Freaker"
-  mother: Bytes! # WRONG - it must be ERC721 that does this
-  "AKA Value. Related to ETH used to birth"
-  energy: BigInt # TODO
-
-  tokenURI: String!
+  "The mother that birthed the Freaker"
+  mother: Bytes!
   "The current owner of the Freaker"
-  owner: Bytes!
+  owner: Account!
+  "URL to get token information"
+  tokenURI: String!
+  "Is immortal if it is one of the first 8 minted freakers"
   isImmortal: Boolean!
-  #   energyBalanceBasic: BigInt!
-  #   energyBalanceIndex: BigInt!
+
+  "The basic energy is set as half the msg.value at birth. To get energy, you do energyBalanceBasic + (freakerIndex - energyBalanceIndex) * freakerFortune"
+  energyBalanceBasic: BigInt!
+  "A snapshot of the global freaker index the last time this freakers basic balance was updated"
+  energyBalanceIndex: BigInt!
 
   "Time born at"
   bornAtTime: Int!
   "Block born at"
   bornAtBlock: Int!
+  "Times this freaker has attacked and missed"
+  attackerMissedCounts: Int!
+  "Times this freaker has dodged an attack against them"
+  defenderMissedCounts: Int!
+  "Times this freaker has had their attack thwarted"
+  attackerThwartedCounts: Int!
+  "Times this freaker has been attacked and thwarted it"
+  defenderThwartedCounts: Int!
+  "Times this freaker has captured another freaker"
+  attackerCapturedCounts: Int!
+  "Times this freaker has been captured"
+  defenderCapturedCounts: Int!
+  
+}
 
-  missedAttackCounts: Int!
-  thwartedAttackCounts: Int!
-  capturedCounts: Int!
+type Account @entity {
+  "Ethereum address"
+  id: ID!
+  "Account Species Count"
+  plutoCount: Int!
+  "Account Species Count"
+  mercuryCount: Int!
+  "Account Species Count"
+  saturnCount: Int!
+  "Account Species Count"
+  uranusCount: Int!
+  "Account Species Count"
+  venusCount: Int!
+  "Account Species Count"
+  marsCount: Int!
+  "Account Species Count"
+  neptuneCount: Int!
+  "Account Species Count"
+  jupiterCount: Int!
+  "Is enlightened is true if the account has at least 1 of each species"
+  isEnlightened: Boolean!
+  "attackMultipler = the sum of the squares of the offense of each freaker an account owns. Then  attackPower = attackMultiplier * energy"
+  attackMultiplier: BigInt!
+  "defendMultiplier = the sum of the squares of the defense of each freaker an account owns. Then defendPower = defendMultiplier * energy"
+  defendMultiplier: BigInt!
+  "All freakers this account owns"
+  freakers: [Freaker!]! @derivedFrom(field: "owner")
 }
 
 enum SpeciesName {
@@ -92,5 +145,3 @@ enum SpeciesName {
   neptune
   jupiter
 }
-
-# is enlighted? TODO

@@ -32,3 +32,10 @@ dataSources:
           handler: handleCaptured
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
+      callHandlers:
+        - function: tap(uint128)
+          handler: handleTap
+        - function: charge(uint128)
+          handler: handleCharge
+        - function: discharge(uint128,uint128)
+          handler: handleDischarge
